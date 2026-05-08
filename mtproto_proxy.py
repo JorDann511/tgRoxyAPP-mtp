@@ -84,7 +84,10 @@ class MTProtoProxy:
 async def get_proxy_info(request):
     """API endpoint для получения информации о прокси"""
     proxy = request.app['proxy']
-    host = os.environ.get('RAILWAY_PUBLIC_DOMAIN', 'localhost')
+    # Получаем домен из Railway или из заголовка запроса
+    host = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+    if not host:
+        host = request.headers.get('Host', 'localhost').split(':')[0]
 
     return web.json_response({
         'success': True,
